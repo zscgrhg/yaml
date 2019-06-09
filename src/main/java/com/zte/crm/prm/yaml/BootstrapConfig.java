@@ -1,41 +1,36 @@
 package com.zte.crm.prm.yaml;
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Stream;
 
 @Configuration
-@EnableConfigurationProperties(BootstrapConfig.class)
-@ConfigurationProperties(prefix = "app")
+@EnableConfigurationProperties(YmlCp.class)
+
 public class BootstrapConfig {
 
-    List<String> ymllocaltion;
-
-    public List<String> getYmllocaltion() {
-        return ymllocaltion;
-    }
-
-    public void setYmllocaltion(List<String> ymllocaltion) {
-        this.ymllocaltion = ymllocaltion;
-    }
 
     @Bean
     public PropertySourcesPlaceholderConfigurer properties(ConfigurableEnvironment environment) {
+
+
+        try {
+            find();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
         propertySourcesPlaceholderConfigurer.setIgnoreResourceNotFound(true);
-
-        for (String s : ymllocaltion) {
-            System.out.println(s);
-        }
 
         Properties[] properties = Stream.of(new String[]{""}, environment.getActiveProfiles())
                 .flatMap(Stream::of)
@@ -56,5 +51,15 @@ public class BootstrapConfig {
         return propertySourcesPlaceholderConfigurer;
     }
 
+    public List<String> find() throws Exception{
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath*:config/*.yml");
+        for (Resource resource : resources) {
+            String filename = resource.getFilename();
+            System.out.println(filename);
+        }
+
+        return null;
+    }
 
 }

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 public class HelloRunner implements CommandLineRunner {
     @Value("${hello.world}")
     public String helloworld;
+
+    @Autowired
+    YmlCp ymlCp;
     @Autowired
     Environment env;
     @Override
