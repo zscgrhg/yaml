@@ -1,3 +1,9 @@
 spring:
   profiles:
-    active: dev
+    active: dev,abcde
+    include: haha,hoho
+
+app:
+  ymllocaltion:
+    - app
+    - bob
